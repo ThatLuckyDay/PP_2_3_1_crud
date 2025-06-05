@@ -3,13 +3,69 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>User Management</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .container input {
+            margin-right: 10px;
+        }
+    </style>
 </head>
+
 <body>
-<div>
-    <th:block th:each="msg : ${messages}">
-        <h1 th:text="${msg}"></h1>
-    </th:block>
+
+<h1>User Management</h1>
+
+<div class="container">
+    <h2>User Data</h2>
+    <form th:action="@{/users}" th:object="${user}" method="post">
+        <input type="hidden" th:field="*{id}" />
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" th:field="*{firstName}" required />
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" th:field="*{lastName}" required />
+        <label for="email">Email:</label>
+        <input type="email" id="email" th:field="*{email}" required />
+        <button type="submit">Save</button>
+    </form>
 </div>
+
+<h2>User List</h2>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.id}"></td>
+        <td th:text="${user.firstName}"></td>
+        <td th:text="${user.lastName}"></td>
+        <td th:text="${user.email}"></td>
+        <td>
+            <a th:href="@{/users/edit(id=${user.id})}">Edit</a>
+            <a th:href="@{/users/delete(id=${user.id})}">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>
