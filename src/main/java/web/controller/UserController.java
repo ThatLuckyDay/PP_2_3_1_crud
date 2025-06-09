@@ -16,34 +16,35 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
-	@GetMapping
-	public String redirectToCommonPage() {
-		return "redirect:/users";
+	@GetMapping("/user")
+	public String showUserPage(Model model) {
+		model.addAttribute("users", userService.listUsers());
+		return "user";
 	}
 
-	@GetMapping("/users")
-	public String listUsers(Model model) {
+	@GetMapping("/admin")
+	public String showAdminPage(Model model) {
 		model.addAttribute("users", userService.listUsers());
 		model.addAttribute("user", new User());
-		return "index";
+		return "admin";
 	}
 
-	@PostMapping("/users")
+	@PostMapping("/admin")
 	public String addUser(@ModelAttribute("user") User user) {
 		userService.update(user);
-		return "redirect:/users";
+		return "redirect:/admin";
 	}
 
-	@GetMapping("/users/edit")
+	@GetMapping("/admin/edit")
 	public String editUser(@RequestParam Long id, Model model) {
 		model.addAttribute("user", userService.getUserById(id));
 		model.addAttribute("users", userService.listUsers());
-		return "index";
+		return "admin";
 	}
 
-	@GetMapping("/users/delete")
+	@GetMapping("/admin/delete")
 	public String deleteUser(@RequestParam Long id) {
 		userService.delete(userService.getUserById(id));
-		return "redirect:/users";
+		return "redirect:/admin";
 	}
 }
