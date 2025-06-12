@@ -1,0 +1,45 @@
+body {
+    background-color: #e8e8e8;
+}
+
+.content-area {
+    flex-grow: 1;
+    padding: 40px;
+}
+
+
+.header-info {
+    background-color: #333;
+    padding: 10px;
+    display: flex;
+    width: 100%;
+}
+.logout-btn {
+    color: #aaa;
+    border: none;
+    background: transparent;
+}
+.logout-btn:hover {
+    color: white;
+}
+.roles-head {
+    color: white;
+}
+.email-head {
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+
+.left-sidebar {
+    width: 250px;
+    padding-top: 15px;
+    min-height: 100vh;
+    position: sticky;
+}
+
+input[readonly], input[disabled] {
+    background-color: #ddd;
+    cursor: not-allowed;
+}

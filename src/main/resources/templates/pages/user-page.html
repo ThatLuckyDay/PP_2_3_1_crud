@@ -1,0 +1,36 @@
+<div th:fragment="user-page" class="tab-pane fade" id="user-page" role="tabpanel">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>User-information page</h2>
+    </div>
+
+    <div class="tab-content border border-2">
+        <h4 class="mb-3 mt-3">About user</h4>
+        <div class="table-responsive bg-light px-4">
+            <table class="table table-striped table-hover border-top mt-4 mb-4">
+                <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Age</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${principal}">
+                    <td th:text="${principal.id}"></td>
+                    <td th:text="${principal.firstName}"></td>
+                    <td th:text="${principal.lastName}"></td>
+                    <td th:text="${principal.age}"></td>
+                    <td th:text="${principal.email}"></td>
+                    <td>
+                            <span th:each="role : ${roles}"
+                                  th:text="${#strings.substringAfter(role.authority,'ROLE_')} + ' '"></span>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>

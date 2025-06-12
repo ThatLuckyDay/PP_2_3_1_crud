@@ -17,17 +17,17 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String firstName;
 
-    @Column(name = "last_name")
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
-    @Column(name = "username", unique = true, nullable = false)
-    private String username;
+    @Column(name = "age", nullable = false)
+    private Integer age;
 
     @Column(name = "password", nullable = false)
     private String password;
@@ -43,13 +43,13 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, String email, String username, String password,
+    public User(Long id, String firstName, String lastName, String email, Integer age, String password,
             Set<Role> roles) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.username = username;
+        this.age = age;
         this.password = password;
         this.roles = roles;
     }
@@ -86,8 +86,8 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setAge(Integer age) {
+        this.age = age;
     }
 
     public void setPassword(String password) {
@@ -102,9 +102,13 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
+    public Integer getAge() {
+        return age;
+    }
+
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override
@@ -127,13 +131,13 @@ public class User implements UserDetails {
         }
         return Objects.equals(id, user.id) && Objects.equals(firstName, user.firstName) &&
                 Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) &&
-                Objects.equals(username, user.username) && Objects.equals(password, user.password) &&
+                Objects.equals(age, user.age) && Objects.equals(password, user.password) &&
                 Objects.equals(roles, user.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, email, username, password, roles);
+        return Objects.hash(id, firstName, lastName, email, age, password, roles);
     }
 
     @Override
@@ -143,7 +147,7 @@ public class User implements UserDetails {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", userName='" + username + '\'' +
+                ", age='" + age + '\'' +
                 ", password='" + password + '\'' +
                 ", roles=" + roles +
                 '}';

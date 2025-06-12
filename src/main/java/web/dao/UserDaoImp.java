@@ -59,8 +59,8 @@ public class UserDaoImp implements UserDao {
     @Transactional
     public Optional<User> getByUsername(String username) {
         TypedQuery<User> query = entityManager.createQuery(
-                "SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.username = :username", User.class);
-        query.setParameter("username", username);
+                "SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.email = :email", User.class);
+        query.setParameter("email", username);
         try {
             return Optional.ofNullable(query.getSingleResult());
         } catch (NoResultException e) {
@@ -72,8 +72,8 @@ public class UserDaoImp implements UserDao {
     public void initDatabase() {
         Role adminRole = new Role(null, "ROLE_ADMIN");
 
-        User adminUser = new User(null, "admin", "admin", "admin@site.ru",
-                "admin", passwordEncoder.encode("admin"), null);
+        User adminUser = new User(null, "admin", "admin", "a@a.a",
+                100, passwordEncoder.encode("admin"), null);
 
         adminUser.setRoles(Set.of(entityManager.merge(adminRole)));
         entityManager.merge(adminUser);

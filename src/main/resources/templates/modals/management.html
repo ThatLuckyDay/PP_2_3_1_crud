@@ -1,0 +1,138 @@
+<!-- Edit Modal -->
+<div th:fragment="management">
+    <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/admin/edit}" method="post">
+                    <div class="modal-body text-center w-50 m-auto">
+
+                        <!-- ID -->
+                        <div class="mb-1">
+                            <label class="form-label fw-bold">ID</label>
+                            <input type="text" class="form-control" name="id" id="editUserId" required readonly>
+                        </div>
+
+                        <!-- First Name -->
+                        <div class="mb-1">
+                            <label class="form-label fw-bold">First Name</label>
+                            <input type="text" class="form-control" name="firstName" id="editFirstName" required>
+                        </div>
+
+                        <!-- Last Name -->
+                        <div class="mb-1">
+                            <label class="form-label fw-bold">Last Name</label>
+                            <input type="text" class="form-control" name="lastName" id="editLastName" required/>
+                        </div>
+
+                        <!-- Age -->
+                        <div class="mb-1">
+                            <label class="form-label fw-bold">Age</label>
+                            <input type="number" class="form-control" name="age" id="editAge" required/>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-1">
+                            <label class="form-label fw-bold">Email</label>
+                            <input type="email" class="form-control" name="email" id="editEmail" required/>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-1">
+                            <label class="form-label fw-bold">Password</label>
+                            <input type="password" class="form-control" name="password" id="editPassword"/>
+                        </div>
+
+                        <!-- Roles -->
+                        <div class="mb-1">
+                            <label class="form-label fw-bold">Roles</label>
+                            <div class="form-check text-start">
+                                <input class="form-check-input" type="checkbox" id="editRole_ADMIN" name="roles"
+                                       value="ADMIN">
+                                <label class="form-check-label" for="editRole_ADMIN">ADMIN</label>
+                            </div>
+                            <div class="form-check text-start">
+                                <input class="form-check-input" type="checkbox" id="editRole_USER" name="roles"
+                                       value="USER">
+                                <label class="form-check-label" for="editRole_USER">USER</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Edit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Delete User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:method="POST" th:action="@{/admin/delete}" class="needs-validation" novalidate>
+                    <div class="modal-body text-center w-50 m-auto">
+
+                        <!-- ID -->
+                        <div class="mb-1">
+                            <label class="form-label fw-bold">ID</label>
+                            <input type="text" class="form-control" name="id" id="deleteUserId" required readonly>
+                        </div>
+
+                        <!-- First Name -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">First Name</label>
+                            <input type="text" class="form-control" name="firstName" id="deleteFirstName" required readonly/>
+                        </div>
+
+                        <!-- Last Name -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Last Name</label>
+                            <input type="text" class="form-control" name="lastName" id="deleteLastName" required readonly/>
+                        </div>
+
+                        <!-- Age -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Age</label>
+                            <input type="number" class="form-control" name="age" id="deleteAge" required readonly/>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Email</label>
+                            <input type="email" class="form-control" name="email" id="deleteEmail" required readonly/>
+                        </div>
+
+                        <!-- Roles -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Roles</label>
+                            <div class="form-check text-start">
+                                <input class="form-check-input" type="checkbox" id="deleteRole_ADMIN" name="roles"
+                                       value="ADMIN" disabled>
+                                <label class="form-check-label" for="editRole_ADMIN">ADMIN</label>
+                            </div>
+                            <div class="form-check text-start">
+                                <input class="form-check-input" type="checkbox" id="deleteRole_USER" name="roles"
+                                       value="USER" disabled>
+                                <label class="form-check-label" for="editRole_USER">USER</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
