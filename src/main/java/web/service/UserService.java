@@ -4,6 +4,7 @@ import web.model.Role;
 import web.model.User;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public interface UserService {
@@ -24,4 +25,6 @@ public interface UserService {
     Set<Role> getRolesByIds(List<Long> roleIds);
 
     User getCurrentUser();
+
+    Optional<User> getByUsername(String username);
 }

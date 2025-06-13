@@ -1,9 +1,6 @@
 package web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,9 +20,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @GetMapping("/user")
     public String showUserPage(Model model) {
         model.addAttribute("user", userService.getCurrentUser());
@@ -36,23 +30,14 @@ public class UserController {
     public String showAdminPage(Model model) {
         model.addAttribute("users", userService.listUsers());
         model.addAttribute("roles", userService.listRoles());
-
         model.addAttribute("formUser", new User());
-
         return "admin";
     }
 
     @PostMapping("/admin")
     public String addUser(@RequestParam(required = false) String newRole,
-            @RequestParam(name = "roleIds", required = false) List<Long> roleIds, @ModelAttribute("user") User user) {
-        if (user.getPassword() != null && !user.getPassword().isBlank()) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
-
-        if (roleIds != null && !roleIds.isEmpty()) {
-            Set<Role> roles = userService.getRolesByIds(roleIds);
-            user.setRoles(roles);
-        }
+            @RequestParam(name = "roleIds") List<Long> roleIds, @ModelAttribute("user") User user) {
+        user.setRoles(userService.getRolesByIds(roleIds));
 
         if (newRole != null && !newRole.isBlank()) {
             userService.addRoleToUser(user, new Role(null, newRole));

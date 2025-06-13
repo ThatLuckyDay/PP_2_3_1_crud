@@ -32,7 +32,7 @@ public class User implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -127,13 +127,12 @@ public class User implements UserDetails {
         }
         return Objects.equals(id, user.id) && Objects.equals(firstName, user.firstName) &&
                 Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) &&
-                Objects.equals(username, user.username) && Objects.equals(password, user.password) &&
-                Objects.equals(roles, user.roles);
+                Objects.equals(username, user.username) && Objects.equals(roles, user.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, email, username, password, roles);
+        return Objects.hash(id, firstName, lastName, email, username, roles);
     }
 
     @Override

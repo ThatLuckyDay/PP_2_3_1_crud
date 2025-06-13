@@ -17,5 +17,5 @@ public interface UserDao {
 
    Optional<User> getByUsername(String username);
 
-   void initDatabase();
+   void initDatabase(List<User> users);
 }

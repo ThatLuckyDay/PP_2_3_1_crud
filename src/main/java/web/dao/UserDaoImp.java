@@ -1,10 +1,6 @@
 package web.dao;
 
 import jakarta.persistence.NoResultException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
-import web.model.Role;
 import web.model.User;
 import org.springframework.stereotype.Repository;
 
@@ -14,16 +10,12 @@ import jakarta.persistence.TypedQuery;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Repository
 public class UserDaoImp implements UserDao {
 
     @PersistenceContext
     private EntityManager entityManager;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Override
     public void add(User user) {
@@ -56,10 +48,9 @@ public class UserDaoImp implements UserDao {
     }
 
     @Override
-    @Transactional
     public Optional<User> getByUsername(String username) {
         TypedQuery<User> query = entityManager.createQuery(
-                "SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.username = :username", User.class);
+                "select u from User u left join fetch u.roles where u.username = :username", User.class);
         query.setParameter("username", username);
         try {
             return Optional.ofNullable(query.getSingleResult());
@@ -68,15 +59,28 @@ public class UserDaoImp implements UserDao {
         }
     }
 
-    @Transactional
-    public void initDatabase() {
-        Role adminRole = new Role(null, "ROLE_ADMIN");
-
-        User adminUser = new User(null, "admin", "admin", "admin@site.ru",
-                "admin", passwordEncoder.encode("admin"), null);
-
-        adminUser.setRoles(Set.of(entityManager.merge(adminRole)));
-        entityManager.merge(adminUser);
+    @Override
+    public void initDatabase(List<User> users) {
+        users.forEach(user -> {
+            boolean userExists = entityManager.createQuery(
+                            "select count(u) > 0 from User u where u.username = :username", Boolean.class)
+                    .setParameter("username", user.getUsername())
+                    .getSingleResult();
+            if (!userExists) {
+                user.getRoles().forEach(role -> {
+                    boolean roleExists = entityManager.createQuery(
+                                    "select count(r) > 0 from Role r where r.authority = :authority",
+                                    Boolean.class)
+                            .setParameter("authority", role.getAuthority())
+                            .getSingleResult();
+                    if (!roleExists) {
+                        entityManager.persist(role);
+                    }
+                });
+                entityManager.persist(user);
+            }
+        });
+        entityManager.flush();
     }
 }
 
