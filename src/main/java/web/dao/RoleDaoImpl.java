@@ -39,7 +39,7 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public Set<Role> findRolesByIds(List<Long> roleIds) {
-        return new HashSet<>(entityManager.createQuery("SELECT r FROM Role r WHERE r.id IN :ids", Role.class)
+        return new HashSet<>(entityManager.createQuery("select r from Role r where r.id in :ids", Role.class)
                 .setParameter("ids", roleIds)
                 .getResultList());
     }

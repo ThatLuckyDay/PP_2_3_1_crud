@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Обработка ролей
             const roles = button.getAttribute('data-bs-roles').split(',');
-            document.querySelectorAll('#editModal input[name="roles"]').forEach(checkbox => {
+            document.querySelectorAll('#editModal input[name="authority"]').forEach(checkbox => {
                 const roleValue = checkbox.value;
                 checkbox.checked = roles.some(role => role.includes(roleValue));
             });
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Обработка ролей
             const roles = button.getAttribute('data-bs-roles').split(',');
-            document.querySelectorAll('#deleteModal input[name="roles"]').forEach(checkbox => {
+            document.querySelectorAll('#deleteModal input[name="authority"]').forEach(checkbox => {
                 const roleValue = checkbox.value;
                 checkbox.checked = roles.some(role => role.includes(roleValue));
             });

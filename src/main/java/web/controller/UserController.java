@@ -2,7 +2,6 @@ package web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +13,6 @@ import web.model.User;
 import web.service.UserService;
 
 import java.util.List;
-import java.util.Set;
 
 @Controller
 public class UserController {
@@ -22,48 +20,31 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @GetMapping("/login")
     public String showLoginPage() {
         return "login";
     }
 
     @GetMapping("/user")
-    public String showUserPage(Model model) {
-        model.addAttribute("user", userService.getCurrentUser());
-        return "index";
+    public String showUserPage(@AuthenticationPrincipal User principal, Model model) {
+        model.addAttribute("principal", principal);
+        return "user";
     }
 
     @GetMapping("/admin")
     public String showAdminPage(@AuthenticationPrincipal User principal, Model model) {
         model.addAttribute("principal", principal);
         model.addAttribute("users", userService.listUsers());
-        model.addAttribute("roles", userService.listRoles());
+        model.addAttribute("user", new User());
 
-        model.addAttribute("formUser", new User());
-
-        return "index";
+        return "admin";
     }
 
-    @PostMapping("/admin")
-    public String addUser(@RequestParam(required = false) String newRole,
-            @RequestParam(name = "roleIds", required = false) List<Long> roleIds, @ModelAttribute("user") User user) {
-        if (user.getPassword() != null && !user.getPassword().isBlank()) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
-
-        if (roleIds != null && !roleIds.isEmpty()) {
-            Set<Role> roles = userService.getRolesByIds(roleIds);
-            user.setRoles(roles);
-        }
-
-        if (newRole != null && !newRole.isBlank()) {
-            userService.addRoleToUser(user, new Role(null, newRole));
-        }
+    @PostMapping("/admin/create")
+    public String createUser(@RequestParam List<String> authority, @ModelAttribute("user") User user) {
+        authority.forEach(role -> userService.addRoleToUser(user, new Role(null, role)));
         userService.update(user);
-        return "redirect:/index";
+        return "redirect:/admin";
     }
 
     @GetMapping("/admin/edit")
@@ -71,17 +52,24 @@ public class UserController {
         User user = userService.getUserById(id);
         user.setPassword("");
         model.addAttribute("user", user);
-        model.addAttribute("roles", userService.listRoles());
 
-        return "index";
+        return "/admin/edit";
+    }
+
+    @PostMapping("/admin/edit")
+    public String editUser(@RequestParam List<String> authority, @ModelAttribute("user") User user) {
+        return createUser(authority, user);
     }
 
     @GetMapping("/admin/delete")
     public String deleteUser(@RequestParam Long id, Model model) {
-        User user = userService.getUserById(id);
-        user.setPassword("");
-        model.addAttribute("formUser", user);
-//        userService.delete(userService.getUserById(id));
-        return "redirect:/index";
+        model.addAttribute("user", userService.getUserById(id));
+        return "/admin/delete";
+    }
+
+    @PostMapping("/admin/delete")
+    public String deleteUser(@RequestParam Long id) {
+        userService.delete(userService.getUserById(id));
+        return "redirect:/admin";
     }
 }

@@ -1,6 +1,16 @@
 package web.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -23,7 +33,7 @@ public class User implements UserDetails {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(name = "email", unique = true)
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
     @Column(name = "age", nullable = false)
@@ -32,7 +42,7 @@ public class User implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -86,8 +96,17 @@ public class User implements UserDetails {
         this.email = email;
     }
 
+    public Integer getAge() {
+        return age;
+    }
+
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 
     public void setPassword(String password) {
@@ -102,18 +121,9 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    public Integer getAge() {
-        return age;
-    }
-
     @Override
     public String getUsername() {
         return email;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
     }
 
     @Override
@@ -123,21 +133,16 @@ public class User implements UserDetails {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof User user)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof User user)) return false;
         return Objects.equals(id, user.id) && Objects.equals(firstName, user.firstName) &&
                 Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) &&
-                Objects.equals(age, user.age) && Objects.equals(password, user.password) &&
-                Objects.equals(roles, user.roles);
+                Objects.equals(age, user.age) && Objects.equals(roles, user.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, email, age, password, roles);
+        return Objects.hash(id, firstName, lastName, email, age, roles);
     }
 
     @Override
@@ -147,7 +152,7 @@ public class User implements UserDetails {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", age='" + age + '\'' +
+                ", age=" + age +
                 ", password='" + password + '\'' +
                 ", roles=" + roles +
                 '}';

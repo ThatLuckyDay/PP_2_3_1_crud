@@ -1,5 +1,5 @@
-<!-- Edit Modal -->
 <div th:fragment="management">
+    <!-- Edit Modal -->
     <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -50,12 +50,12 @@
                         <div class="mb-1">
                             <label class="form-label fw-bold">Roles</label>
                             <div class="form-check text-start">
-                                <input class="form-check-input" type="checkbox" id="editRole_ADMIN" name="roles"
+                                <input class="form-check-input" type="checkbox" id="editRole_ADMIN" name="authority"
                                        value="ADMIN">
                                 <label class="form-check-label" for="editRole_ADMIN">ADMIN</label>
                             </div>
                             <div class="form-check text-start">
-                                <input class="form-check-input" type="checkbox" id="editRole_USER" name="roles"
+                                <input class="form-check-input" type="checkbox" id="editRole_USER" name="authority"
                                        value="USER">
                                 <label class="form-check-label" for="editRole_USER">USER</label>
                             </div>
@@ -71,6 +71,7 @@
         </div>
     </div>
 
+    <!-- Delete Modal -->
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -115,12 +116,12 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">Roles</label>
                             <div class="form-check text-start">
-                                <input class="form-check-input" type="checkbox" id="deleteRole_ADMIN" name="roles"
+                                <input class="form-check-input" type="checkbox" id="deleteRole_ADMIN" name="authority"
                                        value="ADMIN" disabled>
                                 <label class="form-check-label" for="editRole_ADMIN">ADMIN</label>
                             </div>
                             <div class="form-check text-start">
-                                <input class="form-check-input" type="checkbox" id="deleteRole_USER" name="roles"
+                                <input class="form-check-input" type="checkbox" id="deleteRole_USER" name="authority"
                                        value="USER" disabled>
                                 <label class="form-check-label" for="editRole_USER">USER</label>
                             </div>

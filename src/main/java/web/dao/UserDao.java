@@ -15,7 +15,7 @@ public interface UserDao {
 
    User getUserById(Long id);
 
-   Optional<User> getByUsername(String username);
+   Optional<User> getByUsername(String email);
 
-   void initDatabase();
+   void initDatabase(List<User> users);
 }

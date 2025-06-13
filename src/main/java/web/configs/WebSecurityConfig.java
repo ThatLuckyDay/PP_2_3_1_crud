@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import web.dao.UserDao;
+import web.service.UserService;
 
 @Configuration
 @EnableWebSecurity
@@ -28,7 +28,7 @@ public class WebSecurityConfig {
         return http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/css/**", "/js/**").permitAll()
-                        .requestMatchers("/admin/**", "/modals/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
@@ -45,10 +45,10 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public UserDetailsService getUserDetailService(UserDao userDao) {
-        return username -> userDao.getByUsername(username)
+    public UserDetailsService getUserDetailService(UserService userService) {
+        return email -> userService.getByUsername(email)
                 .orElseThrow(() -> new UsernameNotFoundException(
-                        "Пользователь с username: " + username + " не найден"));
+                        "Пользователь с username: " + email + " не найден"));
     }
 
     @Bean
