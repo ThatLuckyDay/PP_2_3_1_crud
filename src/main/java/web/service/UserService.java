@@ -24,7 +24,5 @@ public interface UserService {
 
     Set<Role> getRolesByIds(List<Long> roleIds);
 
-    User getCurrentUser();
-
     Optional<User> getByUsername(String username);
 }

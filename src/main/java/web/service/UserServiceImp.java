@@ -1,6 +1,5 @@
 package web.service;
 
-import org.hibernate.QueryException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,109 +16,110 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImp implements UserService {
 
-   @Autowired
-   private UserDao userDao;
+    @Autowired
+    private UserDao userDao;
 
-   @Autowired
-   private RoleDao roleDao;
+    @Autowired
+    private RoleDao roleDao;
 
-   @Autowired
-   private PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-   @Override
-   @Transactional
-   public void add(User user) {
-      user.setPassword(passwordEncoder.encode(user.getPassword()));
-      userDao.add(user);
-   }
+    @Override
+    @Transactional
+    public void add(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userDao.add(user);
+    }
 
-   @Override
-   @Transactional
-   public User update(User user) {
-      user.setPassword(passwordEncoder.encode(user.getPassword()));
-      User updatedUser = userDao.update(user);
+    @Override
+    @Transactional
+    public User update(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-      Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
-      if (updatedUser.getId().equals(((User) currentAuth.getPrincipal()).getId())) {
-         UsernamePasswordAuthenticationToken newAuth =
-                 new UsernamePasswordAuthenticationToken(
-                         updatedUser,
-                         currentAuth.getCredentials(),
-                         updatedUser.getAuthorities()
-                 );
-         newAuth.setDetails(currentAuth.getDetails());
-         SecurityContextHolder.getContext().setAuthentication(newAuth);
-      }
-      return updatedUser;
-   }
+        user.setRoles(user.getRoles()
+                .stream()
+                .map(role -> roleDao.findByAuthority(role.getAuthority()).orElseThrow())
+                .collect(Collectors.toSet())
+        );
+        User updatedUser = userDao.update(user);
 
-   @Override
-   @Transactional
-   public void delete(User user) {
-      userDao.delete(user);
-   }
+        Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
+        if (updatedUser.getId().equals(((User) currentAuth.getPrincipal()).getId())) {
+            UsernamePasswordAuthenticationToken newAuth =
+                    new UsernamePasswordAuthenticationToken(
+                            updatedUser,
+                            currentAuth.getCredentials(),
+                            updatedUser.getAuthorities()
+                    );
+            newAuth.setDetails(currentAuth.getDetails());
+            SecurityContextHolder.getContext().setAuthentication(newAuth);
+        }
+        return updatedUser;
+    }
 
-   @Override
-   @Transactional(readOnly = true)
-   public List<User> listUsers() {
-      return userDao.listUsers();
-   }
+    @Override
+    @Transactional
+    public void delete(User user) {
+        userDao.delete(user);
+    }
 
-   @Override
-   @Transactional(readOnly = true)
-   public User getUserById(Long id) {
-      return userDao.getUserById(id);
-   }
+    @Override
+    @Transactional(readOnly = true)
+    public List<User> listUsers() {
+        return userDao.listUsers();
+    }
 
-   @Override
-   @Transactional(readOnly = true)
-   public Set<Role> listRoles() {
-      return roleDao.getRoles();
-   }
+    @Override
+    @Transactional(readOnly = true)
+    public User getUserById(Long id) {
+        return userDao.getUserById(id);
+    }
 
-   @Override
-   @Transactional
-   public void addRoleToUser(User user, Role role) {
-      if (user.getRoles() == null) {
-         user.setRoles(new HashSet<>());
-      }
+    @Override
+    @Transactional(readOnly = true)
+    public Set<Role> listRoles() {
+        return roleDao.getRoles();
+    }
 
-      final String authority = role.getAuthority().toUpperCase();
+    @Override
+    @Transactional
+    public void addRoleToUser(User user, Role role) {
+        if (user.getRoles() == null) {
+            user.setRoles(new HashSet<>());
+        }
 
-      final String prefixedRole = authority.startsWith("ROLE_")
-              ? authority
-              : "ROLE_" + authority;
+        final String authority = role.getAuthority().toUpperCase();
 
-      boolean roleExists = user.getRoles().stream()
-              .anyMatch(r -> r.getAuthority().equals(prefixedRole));
+        final String prefixedRole = authority.startsWith("ROLE_")
+                ? authority
+                : "ROLE_" + authority;
 
-      if (!roleExists) {
-         Role dbRole = roleDao.findByAuthority(prefixedRole)
-                 .orElseGet(() -> roleDao.save(new Role(null, prefixedRole)));
+        boolean roleExists = user.getRoles().stream()
+                .anyMatch(r -> r.getAuthority().equals(prefixedRole));
 
-         user.getRoles().add(dbRole);
-      }
-   }
+        if (!roleExists) {
+            Role dbRole = roleDao.findByAuthority(prefixedRole)
+                    .orElseGet(() -> roleDao.save(new Role(null, prefixedRole)));
 
-   @Override
-   @Transactional(readOnly = true)
-   public Set<Role> getRolesByIds(List<Long> roleIds) {
-      return roleDao.findRolesByIds(roleIds);
-   }
+            user.getRoles().add(dbRole);
+        }
+    }
 
-   @Override
-   public User getCurrentUser() {
-      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-      return (User) authentication.getPrincipal();
-   }
+    @Override
+    @Transactional(readOnly = true)
+    public Set<Role> getRolesByIds(List<Long> roleIds) {
+        return roleDao.findRolesByIds(roleIds);
+    }
 
-   @Override
-   @Transactional(readOnly = true)
-   public Optional<User> getByUsername(String email) {
-      return userDao.getByUsername(email);
-   }
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<User> getByUsername(String email) {
+        return userDao.getByUsername(email);
+    }
 }

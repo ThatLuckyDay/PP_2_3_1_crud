@@ -22,14 +22,6 @@ body {
 .logout-btn:hover {
     color: white;
 }
-.roles-head {
-    color: white;
-}
-.email-head {
-    color: white;
-    font-size: 20px;
-    font-weight: bold;
-}
 
 
 .left-sidebar {

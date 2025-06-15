@@ -7,7 +7,7 @@
                     <h5 class="modal-title">Edit User</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form th:action="@{/admin/edit}" method="post">
+                <form id="editForm">
                     <div class="modal-body text-center w-50 m-auto">
 
                         <!-- ID -->
@@ -43,19 +43,19 @@
                         <!-- Password -->
                         <div class="mb-1">
                             <label class="form-label fw-bold">Password</label>
-                            <input type="password" class="form-control" name="password" id="editPassword"/>
+                            <input type="password" class="form-control" name="password" id="editPassword" required/>
                         </div>
 
                         <!-- Roles -->
                         <div class="mb-1">
                             <label class="form-label fw-bold">Roles</label>
                             <div class="form-check text-start">
-                                <input class="form-check-input" type="checkbox" id="editRole_ADMIN" name="authority"
+                                <input class="form-check-input" type="checkbox" id="editRole_ADMIN" name="roles"
                                        value="ADMIN">
                                 <label class="form-check-label" for="editRole_ADMIN">ADMIN</label>
                             </div>
                             <div class="form-check text-start">
-                                <input class="form-check-input" type="checkbox" id="editRole_USER" name="authority"
+                                <input class="form-check-input" type="checkbox" id="editRole_USER" name="roles"
                                        value="USER">
                                 <label class="form-check-label" for="editRole_USER">USER</label>
                             </div>
@@ -79,7 +79,7 @@
                     <h5 class="modal-title" id="deleteModalLabel">Delete User</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form th:method="POST" th:action="@{/admin/delete}" class="needs-validation" novalidate>
+                <form id="deleteForm" class="needs-validation" novalidate>
                     <div class="modal-body text-center w-50 m-auto">
 
                         <!-- ID -->
